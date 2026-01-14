@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "shincode-dev-skills",
+  "description": "ShinCode's Claude Code Skills marketplace - Interactive web project setup and development tools",
+  "owner": {
+    "name": "Shin-sibainu",
+    "url": "https://github.com/Shin-sibainu"
+  },
+  "plugins": [
+    {
+      "name": "new-webapp",
+      "description": "Interactive web project setup. Guides through selecting framework (Next.js/React+Vite), BaaS (Supabase/Turso), auth (better-auth/Clerk), payment (Stripe), storage, and email. Generates complete project scaffold with docs/ for requirements management.",
+      "source": "./skills/new-webapp",
+      "category": "development",
+      "tags": ["webapp", "nextjs", "react", "supabase", "stripe"]
+    }
+  ]
+}
