@@ -1,0 +1,34 @@
+{
+  "name": "shincode-dev-skills",
+  "version": "1.0.0",
+  "description": "A curated collection of Claude Code skills for modern web development",
+  "author": "ShinCode",
+  "repository": "https://github.com/YOUR_USERNAME/shincode-dev-skills",
+  "skills": [
+    {
+      "name": "new-webapp",
+      "description": "Interactive web development project setup with framework, BaaS, auth, and payment selection",
+      "path": "skills/new-webapp",
+      "command": "/new-webapp",
+      "category": "project-setup",
+      "tags": ["nextjs", "react", "vue", "supabase", "firebase", "stripe", "auth"]
+    }
+  ],
+  "categories": [
+    {
+      "id": "project-setup",
+      "name": "Project Setup",
+      "description": "Skills for initializing and scaffolding new projects"
+    },
+    {
+      "id": "workflow",
+      "name": "Development Workflow",
+      "description": "Skills for improving development workflow"
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "description": "Skills for generating documentation"
+    }
+  ]
+}
