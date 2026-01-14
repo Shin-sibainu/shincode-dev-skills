@@ -10,30 +10,32 @@ A curated collection of Claude Code skills for modern web development.
 
 ## Installation
 
-### Option 1: Manual Installation (Single Skill)
+### Option 1: Marketplace (Recommended)
 
-1. Copy the desired skill folder to your Claude Code skills directory:
+```bash
+# 1. Add marketplace
+/plugin marketplace add Shin-sibainu/shincode-dev-skills
+
+# 2. Install skill
+/plugin install new-webapp@shincode-dev-skills
+```
+
+### Option 2: Download .skill file
 
 ```bash
 # macOS/Linux
-cp -r skills/new-webapp ~/.claude/skills/
+curl -L https://github.com/Shin-sibainu/shincode-dev-skills/raw/master/new-webapp.skill -o ~/.claude/skills/new-webapp.skill
 
 # Windows (PowerShell)
-Copy-Item -Recurse skills/new-webapp $env:USERPROFILE/.claude/skills/
+Invoke-WebRequest -Uri "https://github.com/Shin-sibainu/shincode-dev-skills/raw/master/new-webapp.skill" -OutFile "$env:USERPROFILE\.claude\skills\new-webapp.skill"
 ```
 
-2. Restart Claude Code
-
-### Option 2: Clone Entire Repository
+### Option 3: Manual copy
 
 ```bash
-# Clone to your global skills directory
-git clone https://github.com/YOUR_USERNAME/shincode-dev-skills.git ~/.claude/skills/shincode-dev-skills
+git clone https://github.com/Shin-sibainu/shincode-dev-skills.git
+cp -r shincode-dev-skills/skills/new-webapp ~/.claude/skills/
 ```
-
-### Option 3: Project-Specific Installation
-
-Copy skills to your project's `.claude/skills/` directory for project-specific use.
 
 ## Usage
 
