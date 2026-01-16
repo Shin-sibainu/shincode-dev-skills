@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A curated collection of Claude Code skills for modern web development",
   "author": "ShinCode",
-  "repository": "https://github.com/YOUR_USERNAME/shincode-dev-skills",
+  "repository": "https://github.com/Shin-sibainu/shincode-dev-skills",
   "skills": [
     {
       "name": "new-webapp",
@@ -11,7 +11,15 @@
       "path": "skills/new-webapp",
       "command": "/new-webapp",
       "category": "project-setup",
-      "tags": ["nextjs", "react", "vue", "supabase", "firebase", "stripe", "auth"]
+      "tags": ["nextjs", "react", "supabase", "turso", "stripe", "better-auth"]
+    },
+    {
+      "name": "dev-workflow",
+      "description": "Development workflow guide with requirements, design docs, tickets, and implementation tracking",
+      "path": "skills/dev-workflow",
+      "command": "/dev-workflow",
+      "category": "workflow",
+      "tags": ["requirements", "documentation", "tickets", "workflow"]
     }
   ],
   "categories": [

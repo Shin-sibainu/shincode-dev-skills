@@ -7,6 +7,7 @@ A curated collection of Claude Code skills for modern web development.
 | Skill | Description | Command |
 |-------|-------------|---------|
 | [new-webapp](./skills/new-webapp/) | Interactive web project setup with framework, BaaS, auth, and payment selection | `/new-webapp` |
+| [dev-workflow](./skills/dev-workflow/) | Development workflow guide with requirements, design docs, tickets, and implementation tracking | `/dev-workflow` |
 
 ## Installation
 

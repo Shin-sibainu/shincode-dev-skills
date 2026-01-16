@@ -13,6 +13,13 @@
       "source": "./skills/new-webapp",
       "category": "development",
       "tags": ["webapp", "nextjs", "react", "supabase", "stripe"]
+    },
+    {
+      "name": "dev-workflow",
+      "description": "Development workflow guide. Manages requirements definition, design document generation (architecture, database, API), task ticket creation, and implementation tracking. Use after project setup to guide the full development lifecycle.",
+      "source": "./skills/dev-workflow",
+      "category": "development",
+      "tags": ["workflow", "requirements", "tickets", "documentation"]
     }
   ]
 }
