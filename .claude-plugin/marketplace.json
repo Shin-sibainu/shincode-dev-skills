@@ -27,6 +27,13 @@
       "source": "./skills/stripe-setup",
       "category": "development",
       "tags": ["stripe", "payment", "subscription", "checkout"]
+    },
+    {
+      "name": "idea-finder",
+      "description": "Niche business idea discovery tool. Helps find profitable app/service ideas through interactive questions, trend analysis, competitor research, and market validation.",
+      "source": "./skills/idea-finder",
+      "category": "planning",
+      "tags": ["ideation", "market-research", "niche", "business"]
     }
   ]
 }

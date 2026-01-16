@@ -28,9 +28,22 @@
       "command": "/stripe-setup",
       "category": "integration",
       "tags": ["stripe", "payment", "subscription", "checkout", "webhook"]
+    },
+    {
+      "name": "idea-finder",
+      "description": "Niche business idea discovery with trend analysis and market validation",
+      "path": "skills/idea-finder",
+      "command": "/idea-finder",
+      "category": "planning",
+      "tags": ["ideation", "market-research", "niche", "competitor-analysis", "validation"]
     }
   ],
   "categories": [
+    {
+      "id": "planning",
+      "name": "Planning & Ideation",
+      "description": "Skills for ideation and market research"
+    },
     {
       "id": "project-setup",
       "name": "Project Setup",
