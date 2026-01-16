@@ -20,6 +20,14 @@
       "command": "/dev-workflow",
       "category": "workflow",
       "tags": ["requirements", "documentation", "tickets", "workflow"]
+    },
+    {
+      "name": "stripe-setup",
+      "description": "Stripe payment integration with subscription and one-time payments",
+      "path": "skills/stripe-setup",
+      "command": "/stripe-setup",
+      "category": "integration",
+      "tags": ["stripe", "payment", "subscription", "checkout", "webhook"]
     }
   ],
   "categories": [
@@ -37,6 +45,11 @@
       "id": "documentation",
       "name": "Documentation",
       "description": "Skills for generating documentation"
+    },
+    {
+      "id": "integration",
+      "name": "Integration",
+      "description": "Skills for integrating third-party services"
     }
   ]
 }
