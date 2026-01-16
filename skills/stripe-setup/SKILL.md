@@ -242,6 +242,137 @@ export async function POST(req: NextRequest) {
 }
 ```
 
+### Step S5: Plan Change API (Upgrade/Downgrade)
+
+```typescript
+// app/api/stripe/change-plan/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { stripe } from '@/lib/stripe';
+import { auth } from '@/lib/auth';
+import { db } from '@/lib/db';
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { newPriceId } = await req.json();
+
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { stripeSubscriptionId: true },
+    });
+
+    if (!user?.stripeSubscriptionId) {
+      return NextResponse.json({ error: 'No subscription' }, { status: 400 });
+    }
+
+    // Get current subscription
+    const subscription = await stripe.subscriptions.retrieve(
+      user.stripeSubscriptionId
+    );
+
+    // Update subscription with new price (proration enabled by default)
+    const updatedSubscription = await stripe.subscriptions.update(
+      user.stripeSubscriptionId,
+      {
+        items: [
+          {
+            id: subscription.items.data[0].id,
+            price: newPriceId,
+          },
+        ],
+        proration_behavior: 'create_prorations', // Charge/credit difference immediately
+        // Or use 'none' to apply at next billing cycle
+      }
+    );
+
+    return NextResponse.json({
+      success: true,
+      subscription: {
+        status: updatedSubscription.status,
+        currentPeriodEnd: updatedSubscription.current_period_end,
+      },
+    });
+  } catch (error) {
+    console.error('Plan change error:', error);
+    return NextResponse.json({ error: 'Plan change failed' }, { status: 500 });
+  }
+}
+```
+
+### Step S6: Plan Change Component
+
+```typescript
+// components/change-plan.tsx
+'use client';
+
+import { useState } from 'react';
+
+interface ChangePlanProps {
+  currentPriceId: string;
+}
+
+const plans = [
+  { name: 'Basic', priceId: 'price_basic_xxx', price: 980 },
+  { name: 'Pro', priceId: 'price_pro_xxx', price: 1980 },
+  { name: 'Enterprise', priceId: 'price_enterprise_xxx', price: 4980 },
+];
+
+export function ChangePlan({ currentPriceId }: ChangePlanProps) {
+  const [loading, setLoading] = useState(false);
+
+  const handleChangePlan = async (newPriceId: string) => {
+    if (newPriceId === currentPriceId) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stripe/change-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPriceId }),
+      });
+
+      if (res.ok) {
+        // Refresh page or update state
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const currentPlan = plans.find((p) => p.priceId === currentPriceId);
+
+  return (
+    <div className="space-y-4">
+      <h3 className="font-bold">Change Plan</h3>
+      <p>Current: {currentPlan?.name}</p>
+      <div className="flex gap-2">
+        {plans.map((plan) => (
+          <button
+            key={plan.priceId}
+            onClick={() => handleChangePlan(plan.priceId)}
+            disabled={loading || plan.priceId === currentPriceId}
+            className={`px-4 py-2 rounded ${
+              plan.priceId === currentPriceId
+                ? 'bg-gray-300 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            {plan.name} (¥{plan.price}/月)
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
 ---
 
 ## One-time Payment Setup
@@ -407,13 +538,20 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   if (!userId) return;
 
   if (session.mode === 'subscription') {
-    // Subscription purchase
+    // Subscription purchase - get subscription details for price ID
+    const subscription = await stripe.subscriptions.retrieve(
+      session.subscription as string
+    );
+    const priceId = subscription.items.data[0]?.price.id;
+
     await db.user.update({
       where: { id: userId },
       data: {
         stripeCustomerId: session.customer as string,
         stripeSubscriptionId: session.subscription as string,
+        stripePriceId: priceId,
         subscriptionStatus: 'active',
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
       },
     });
   } else {
@@ -430,12 +568,22 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+  const priceId = subscription.items.data[0]?.price.id;
+
   await db.user.updateMany({
     where: { stripeSubscriptionId: subscription.id },
     data: {
       subscriptionStatus: subscription.status,
+      stripePriceId: priceId, // Track current plan
       currentPeriodEnd: new Date(subscription.current_period_end * 1000),
     },
+  });
+
+  // Log plan changes for debugging
+  console.log(`Subscription ${subscription.id} updated:`, {
+    status: subscription.status,
+    priceId,
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
   });
 }
 
@@ -445,18 +593,56 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     data: {
       subscriptionStatus: 'canceled',
       stripeSubscriptionId: null,
+      stripePriceId: null,
     },
   });
 }
 
 async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
-  // Send receipt email, update records, etc.
-  console.log('Payment succeeded for invoice:', invoice.id);
+  // Monthly renewal - update period end date
+  if (invoice.subscription) {
+    const subscription = await stripe.subscriptions.retrieve(
+      invoice.subscription as string
+    );
+
+    await db.user.updateMany({
+      where: { stripeSubscriptionId: subscription.id },
+      data: {
+        subscriptionStatus: 'active',
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      },
+    });
+
+    // Optional: Send renewal confirmation email
+    // await sendRenewalEmail(invoice.customer_email, invoice.amount_paid);
+  }
+
+  console.log('Payment succeeded:', {
+    invoiceId: invoice.id,
+    amount: invoice.amount_paid,
+    customerEmail: invoice.customer_email,
+  });
 }
 
 async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
-  // Notify user, retry logic, etc.
-  console.log('Payment failed for invoice:', invoice.id);
+  // Update status to past_due
+  if (invoice.subscription) {
+    await db.user.updateMany({
+      where: { stripeSubscriptionId: invoice.subscription as string },
+      data: {
+        subscriptionStatus: 'past_due',
+      },
+    });
+
+    // Optional: Send payment failed notification
+    // await sendPaymentFailedEmail(invoice.customer_email);
+  }
+
+  console.log('Payment failed:', {
+    invoiceId: invoice.id,
+    customerEmail: invoice.customer_email,
+    attemptCount: invoice.attempt_count,
+  });
 }
 ```
 
@@ -484,7 +670,8 @@ model User {
   email                String    @unique
   stripeCustomerId     String?   @unique
   stripeSubscriptionId String?   @unique
-  subscriptionStatus   String?   // 'active', 'canceled', 'past_due'
+  stripePriceId        String?   // Current plan price ID (e.g., 'price_pro_xxx')
+  subscriptionStatus   String?   // 'active', 'canceled', 'past_due', 'trialing'
   currentPeriodEnd     DateTime?
   purchases            Purchase[]
 }
@@ -528,16 +715,12 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 export async function getSubscriptionTier(userId: string): Promise<string | null> {
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { stripeSubscriptionId: true },
+    select: { stripePriceId: true, subscriptionStatus: true },
   });
 
-  if (!user?.stripeSubscriptionId) return null;
-
-  const subscription = await stripe.subscriptions.retrieve(
-    user.stripeSubscriptionId
-  );
-
-  const priceId = subscription.items.data[0]?.price.id;
+  if (!user?.stripePriceId || user.subscriptionStatus !== 'active') {
+    return null;
+  }
 
   // Map price ID to tier name
   const tierMap: Record<string, string> = {
@@ -546,7 +729,37 @@ export async function getSubscriptionTier(userId: string): Promise<string | null
     'price_enterprise_xxx': 'enterprise',
   };
 
-  return tierMap[priceId] || null;
+  return tierMap[user.stripePriceId] || null;
+}
+
+// Get full subscription info from DB (no Stripe API call)
+export async function getSubscriptionInfo(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      stripePriceId: true,
+      subscriptionStatus: true,
+      currentPeriodEnd: true,
+    },
+  });
+
+  if (!user) return null;
+
+  const tierMap: Record<string, string> = {
+    'price_basic_xxx': 'basic',
+    'price_pro_xxx': 'pro',
+    'price_enterprise_xxx': 'enterprise',
+  };
+
+  return {
+    tier: user.stripePriceId ? tierMap[user.stripePriceId] : null,
+    priceId: user.stripePriceId,
+    status: user.subscriptionStatus,
+    currentPeriodEnd: user.currentPeriodEnd,
+    isActive: user.subscriptionStatus === 'active' &&
+              user.currentPeriodEnd &&
+              user.currentPeriodEnd > new Date(),
+  };
 }
 ```
 
