@@ -7,6 +7,17 @@ description: Development workflow guide for web projects. Manages requirements d
 
 Guide users through a structured development workflow from requirements to deployment.
 
+## Execution Mode
+
+This workflow uses a **hybrid approach**:
+
+| Phase | Mode | Description |
+|-------|------|-------------|
+| Step 1-2 | **Interactive** | Requirements & design - confirm with user |
+| Step 3-6 | **Automatic** | Tickets & implementation - run without interruption |
+
+After user approves the design documents, the implementation phase runs automatically until completion.
+
 ## When to Use
 
 - After running `/new-webapp` to set up a project
@@ -154,7 +165,36 @@ Read `docs/requirements.md` and generate design documents:
 [Include sample JSON for key endpoints]
 ```
 
-### Step 3: Task Ticket Creation
+#### 2d. User Confirmation (Last Interactive Step)
+
+After generating all design documents, present a summary and ask for approval:
+
+```
+Design documents have been generated:
+- docs/architecture.md - System architecture
+- docs/database.md - Database schema
+- docs/api.md - API endpoints
+
+Please review these documents. Once approved, I will:
+1. Create task tickets automatically
+2. Implement all tickets sequentially
+3. Report progress as I go
+
+Ready to proceed with automatic implementation?
+```
+
+**If user approves:** Proceed to Step 3 (automatic mode begins)
+**If user wants changes:** Make requested edits, then ask again
+
+---
+
+## AUTOMATIC MODE BEGINS
+
+From this point, no user confirmation is needed. Implementation runs until completion.
+
+---
+
+### Step 3: Task Ticket Creation (Automatic)
 
 Split requirements into actionable tickets in `docs/tickets/`:
 
@@ -196,74 +236,73 @@ Brief description of what needs to be done.
 7. `XX-testing.md` - Test coverage
 8. `XX-deployment.md` - Deployment preparation
 
-### Step 4: Implementation Mode
+### Step 4: Implementation Mode (Automatic)
 
-Ask user which ticket to work on:
+Process all tickets sequentially without user interruption.
+
+#### 4a. Automatic Execution Flow
 
 ```
-Which ticket would you like to implement?
-- 01-project-setup (Not Started)
-- 02-database-setup (Not Started)
-- 03-auth-implementation (Not Started)
+FOR each ticket in docs/tickets/ (sorted by number):
+  1. Log: "Starting ticket: [XX-name]"
+  2. Read ticket requirements
+  3. Detect domain and load appropriate skill patterns
+  4. Implement all code changes
+  5. Update ticket checkboxes
+  6. Mark ticket as Done
+  7. Log: "Completed ticket: [XX-name]"
+  8. Immediately proceed to next ticket
+END FOR
+
+Log: "All tickets completed!"
+```
+
+#### 4b. Skill Auto-Detection
+
+Automatically detect and apply specialized skill patterns based on ticket content:
+
+| Ticket Keywords | Applied Skill | Action |
+|-----------------|---------------|--------|
+| UI, component, page, layout, design | `/frontend-design` patterns | Use shadcn/ui, Tailwind best practices |
+| Stripe, payment, subscription, checkout | `/stripe-setup` patterns | Use Stripe SDK patterns from skill |
+| auth, login, signup, session | `new-webapp` auth reference | Apply auth patterns |
+| database, schema, migration | `new-webapp` DB reference | Apply DB patterns |
+| API, endpoint, route | `new-webapp` API reference | Apply API patterns |
+
+**No user confirmation needed** - skills are applied automatically based on content.
+
+#### 4c. Progress Logging
+
+During automatic execution, output progress updates:
+
+```
+[1/6] Starting: 01-project-setup
+      - Installing dependencies...
+      - Creating directory structure...
+      - Done ✓
+
+[2/6] Starting: 02-database-setup
+      - Applying skill: database patterns
+      - Creating schema...
+      - Running migrations...
+      - Done ✓
+
+[3/6] Starting: 03-auth-implementation
+      - Applying skill: new-webapp auth patterns
+      - Setting up better-auth...
+      - Creating auth routes...
+      - Done ✓
+
 ...
+
+[6/6] Starting: 06-deployment-prep
+      - Creating deployment config...
+      - Done ✓
+
+✅ All 6 tickets completed!
 ```
 
-#### 4a. Skill Detection
-
-When a ticket is selected, analyze its content and **suggest specialized skills** if available:
-
-| Ticket Keywords | Suggested Skill | Description |
-|-----------------|-----------------|-------------|
-| UI, component, page, layout, design, styling | `/frontend-design` | Marketplace skill for UI implementation |
-| Stripe, payment, subscription, checkout, billing | `/stripe-setup` | Payment integration patterns |
-| auth, login, signup, session, password | Reference: `new-webapp` auth patterns | Authentication implementation |
-| database, schema, migration, table | Reference: `new-webapp` DB patterns | Database setup |
-
-**Skill suggestion flow:**
-
-```
-1. Read ticket content
-2. Detect keywords/domain
-3. If specialized skill available:
-   → "This ticket involves [domain]. Would you like to use /[skill-name] for guidance?"
-   → If yes: Suggest user run the skill, then return to continue
-   → If no: Proceed with implementation using general knowledge
-4. If no specialized skill:
-   → Proceed with implementation directly
-```
-
-**Example:**
-
-```
-User selects: "04-payment-integration.md"
-
-Claude analyzes: Contains "Stripe", "subscription", "checkout"
-
-Claude says:
-"This ticket involves Stripe payment integration.
-I recommend using `/stripe-setup` skill which provides:
-- Subscription setup with 3-tier plans
-- One-time payment patterns
-- Webhook handlers
-- Customer Portal
-
-Would you like to use this skill for guidance?"
-```
-
-#### 4b. Implementation Steps
-
-For each ticket:
-
-1. **Read** the ticket requirements
-2. **Detect** if specialized skill is applicable (see 4a)
-3. **Suggest** skill if available, or proceed directly
-4. **Implement** the code changes following skill patterns
-5. **Update** ticket checkboxes as criteria are met
-6. **Test** the implementation
-7. **Mark** ticket as Done when complete
-8. **Ask** user to proceed to next ticket or take a break
-
-#### 4c. Available Skills Reference
+#### 4d. Available Skills Reference
 
 **From this marketplace (shincode-dev-skills):**
 
@@ -281,25 +320,28 @@ For each ticket:
 
 **Note:** Check available skills with `/plugin` command. Skills may vary based on installed plugins.
 
-### Step 5: Progress Tracking
+### Step 5: Progress Tracking (Automatic)
 
-Provide progress summary when asked:
+Progress is logged automatically during implementation. Final summary is displayed after completion:
 
 ```markdown
-## Development Progress
+## Development Complete!
 
-| Ticket | Status | Progress |
-|--------|--------|----------|
-| 01-project-setup | Done | 100% |
-| 02-database-setup | In Progress | 60% |
-| 03-auth-implementation | Not Started | 0% |
+| Ticket | Status |
+|--------|--------|
+| 01-project-setup | ✅ Done |
+| 02-database-setup | ✅ Done |
+| 03-auth-implementation | ✅ Done |
+| 04-core-features | ✅ Done |
+| 05-ui-components | ✅ Done |
+| 06-deployment-prep | ✅ Done |
 
-Overall: 35% complete (2/6 tickets done)
+All 6 tickets completed successfully!
 ```
 
-### Step 6: Deployment Checklist
+### Step 6: Deployment Checklist (Automatic)
 
-When all tickets are done, provide deployment checklist:
+Automatically displayed after all tickets are complete:
 
 ```markdown
 ## Pre-Deployment Checklist
@@ -333,20 +375,35 @@ When all tickets are done, provide deployment checklist:
 
 ## Commands Within Workflow
 
-Users can say:
+**During Interactive Phase (Step 1-2):**
 
 | Command | Action |
 |---------|--------|
-| "show progress" | Display progress summary |
-| "next ticket" | Move to next pending ticket |
 | "update requirements" | Edit requirements.md |
 | "regenerate docs" | Regenerate design documents |
-| "deploy checklist" | Show deployment checklist |
+| "show design" | Display current design documents |
+
+**During Automatic Phase (Step 3-6):**
+
+The automatic phase runs without interruption. However, if the user needs to stop:
+
+| Command | Action |
+|---------|--------|
+| "pause" or "stop" | Pause after current ticket completes |
+| "show progress" | Display current progress |
+
+**After Completion:**
+
+| Command | Action |
+|---------|--------|
+| "deploy checklist" | Show deployment checklist again |
+| "run tests" | Execute test suite |
 
 ## Important Notes
 
-- Always read existing docs before generating new ones
-- Preserve user edits when regenerating documents
-- Ask for confirmation before overwriting files
-- Keep tickets small and focused (1-4 hours of work each)
+- **Step 1-2**: Always confirm with user before proceeding
+- **Step 3-6**: Run automatically without interruption
+- Keep tickets small and focused (30min-2hours of work each)
 - Update ticket status in real-time during implementation
+- Log progress clearly so user can follow along
+- Apply specialized skills automatically based on ticket content
