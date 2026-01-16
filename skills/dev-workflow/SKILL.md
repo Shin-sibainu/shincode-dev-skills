@@ -233,8 +233,7 @@ Brief description of what needs to be done.
 4. `04-core-feature-1.md` - First main feature
 5. `05-core-feature-2.md` - Second main feature
 6. ... (based on requirements)
-7. `XX-testing.md` - Test coverage
-8. `XX-deployment.md` - Deployment preparation
+7. `XX-deployment.md` - Deployment preparation
 
 ### Step 4: Implementation Mode (Automatic)
 
@@ -362,10 +361,9 @@ Automatically displayed after all tickets are complete:
 - [ ] Code minified
 - [ ] Caching configured
 
-### Testing
-- [ ] All tests passing
-- [ ] Manual QA complete
-- [ ] Cross-browser tested
+### Verification
+- [ ] Main flows work in browser
+- [ ] No console errors
 
 ### Monitoring
 - [ ] Error tracking setup (Sentry)
@@ -397,7 +395,6 @@ The automatic phase runs without interruption. However, if the user needs to sto
 | Command | Action |
 |---------|--------|
 | "deploy checklist" | Show deployment checklist again |
-| "run tests" | Execute test suite |
 
 ## Important Notes
 
