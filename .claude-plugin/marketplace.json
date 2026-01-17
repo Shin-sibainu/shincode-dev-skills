@@ -34,6 +34,13 @@
       "source": "./skills/idea-finder",
       "category": "planning",
       "tags": ["ideation", "market-research", "niche", "business"]
+    },
+    {
+      "name": "growth-advisor",
+      "description": "Data-driven revenue growth advisor using MCP servers (Supabase, Stripe, GA4, Search Console) to analyze metrics and suggest scaling strategies for profitable apps.",
+      "source": "./skills/growth-advisor",
+      "category": "growth",
+      "tags": ["growth", "revenue", "analytics", "mcp", "stripe", "ga4"]
     }
   ]
 }

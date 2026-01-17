@@ -10,6 +10,7 @@ A curated collection of Claude Code skills for modern web development.
 | [new-webapp](./skills/new-webapp/) | Interactive web project setup with framework, BaaS, auth, and payment selection | `/new-webapp` |
 | [dev-workflow](./skills/dev-workflow/) | Development workflow guide with requirements, design docs, tickets, and implementation tracking | `/dev-workflow` |
 | [stripe-setup](./skills/stripe-setup/) | Stripe payment integration (subscription + one-time payments, webhooks, Customer Portal) | `/stripe-setup` |
+| [growth-advisor](./skills/growth-advisor/) | Data-driven revenue growth advisor using MCP servers (Supabase, Stripe, GA4, Search Console) | `/growth-advisor` |
 
 ## Installation
 

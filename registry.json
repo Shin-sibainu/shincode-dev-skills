@@ -36,6 +36,14 @@
       "command": "/idea-finder",
       "category": "planning",
       "tags": ["ideation", "market-research", "niche", "competitor-analysis", "validation"]
+    },
+    {
+      "name": "growth-advisor",
+      "description": "Data-driven revenue growth advisor using MCP servers (Supabase, Stripe, GA4, Search Console)",
+      "path": "skills/growth-advisor",
+      "command": "/growth-advisor",
+      "category": "growth",
+      "tags": ["growth", "revenue", "analytics", "mcp", "stripe", "ga4", "churn", "conversion"]
     }
   ],
   "categories": [
@@ -63,6 +71,11 @@
       "id": "integration",
       "name": "Integration",
       "description": "Skills for integrating third-party services"
+    },
+    {
+      "id": "growth",
+      "name": "Growth & Analytics",
+      "description": "Skills for scaling revenue and analyzing metrics"
     }
   ]
 }
