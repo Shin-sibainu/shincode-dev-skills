@@ -1,0 +1,5 @@
+{
+  "name": "new-webapp",
+  "description": "Interactive web project setup. Guides through selecting framework, BaaS, auth, payment, storage, and email providers.",
+  "version": "1.0.0"
+}

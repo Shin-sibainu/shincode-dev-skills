@@ -1,0 +1,5 @@
+{
+  "name": "stripe-setup",
+  "description": "Stripe payment integration guide. Implements subscription plans (3-tier), one-time payments, Customer Portal, and webhooks for web applications.",
+  "version": "1.0.0"
+}

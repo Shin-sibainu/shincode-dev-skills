@@ -1,0 +1,5 @@
+{
+  "name": "growth-advisor",
+  "description": "Data-driven revenue growth advisor using MCP servers (Supabase, Stripe, GA4, Search Console) to analyze metrics and suggest scaling strategies for profitable apps.",
+  "version": "1.0.0"
+}
