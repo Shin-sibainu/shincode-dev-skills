@@ -9,35 +9,55 @@
   "plugins": [
     {
       "name": "new-webapp",
+      "version": "1.0.0",
       "description": "Interactive web project setup. Guides through selecting framework (Next.js/React+Vite), BaaS (Supabase/Turso), auth (better-auth/Clerk), payment (Stripe), storage, and email. Generates complete project scaffold with docs/ for requirements management.",
+      "author": {
+        "name": "Shin-sibainu"
+      },
       "source": "./skills/new-webapp",
       "category": "development",
       "tags": ["webapp", "nextjs", "react", "supabase", "stripe"]
     },
     {
       "name": "dev-workflow",
+      "version": "1.0.0",
       "description": "Development workflow guide. Manages requirements definition, design document generation (architecture, database, API), task ticket creation, and implementation tracking. Use after project setup to guide the full development lifecycle.",
+      "author": {
+        "name": "Shin-sibainu"
+      },
       "source": "./skills/dev-workflow",
       "category": "development",
       "tags": ["workflow", "requirements", "tickets", "documentation"]
     },
     {
       "name": "stripe-setup",
+      "version": "1.0.0",
       "description": "Stripe payment integration guide. Implements subscription plans (3-tier), one-time payments, Customer Portal, and webhooks for web applications.",
+      "author": {
+        "name": "Shin-sibainu"
+      },
       "source": "./skills/stripe-setup",
       "category": "development",
       "tags": ["stripe", "payment", "subscription", "checkout"]
     },
     {
       "name": "idea-finder",
+      "version": "1.0.0",
       "description": "Niche business idea discovery tool. Helps find profitable app/service ideas through interactive questions, trend analysis, competitor research, and market validation.",
+      "author": {
+        "name": "Shin-sibainu"
+      },
       "source": "./skills/idea-finder",
       "category": "planning",
       "tags": ["ideation", "market-research", "niche", "business"]
     },
     {
       "name": "growth-advisor",
+      "version": "1.0.0",
       "description": "Data-driven revenue growth advisor using MCP servers (Supabase, Stripe, GA4, Search Console) to analyze metrics and suggest scaling strategies for profitable apps.",
+      "author": {
+        "name": "Shin-sibainu"
+      },
       "source": "./skills/growth-advisor",
       "category": "growth",
       "tags": ["growth", "revenue", "analytics", "mcp", "stripe", "ga4"]
